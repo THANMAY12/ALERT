@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALERT-AI | Landslide Control Center</title>
+    <!-- Modern Futuristic Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet Map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="style.css">
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+</head>
+<body>
+
+    <div class="layout">
+        
+        <!-- MAIN CONTENT -->
+        <main class="main">
+            
+            <header class="topbar">
+                <div class="brand" style="margin-right: 20px;">
+                    <div class="logo-orb"></div>
+                    <h2 style="font-family: 'Orbitron', sans-serif; color: var(--accent-blue); font-size: 20px; letter-spacing: 2px; text-shadow: 0 0 10px var(--glow-spread);">ALERT-AI</h2>
+                </div>
+                <div class="header-titles" style="flex: 1;">
+                    <h1>GLOBAL MONITORING HUB</h1>
+                    <p class="subtitle">Real-time Topographical & Environmental Analysis</p>
+                </div>
+                
+                <div class="prediction-box safe" id="topPredictionBox">
+                    <div class="pred-label">AI ASSIGNMENT</div>
+                    <h2 id="risk">SAFE</h2>
+                    <p class="prob" id="probability">0.0%</p>
+                </div>
+            </header>
+
+            <!-- CRITICAL ALERT BANNER -->
+            <div id="dangerAlert" class="danger-banner hidden">
+                <div class="danger-content">
+                    <span class="alert-icon">⚠️</span>
+                    <span>CRITICAL: LANDSLIDE DANGER DETECTED. IMMEDIATE EVACUATION PROTOCOL RECOMMENDED.</span>
+                    <span class="alert-icon">⚠️</span>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+
+                <!-- ROW 1: SENSOR CARDS -->
+                <section class="metrics-grid">
+                    <div class="glass-card metric">
+                        <div class="metric-title">THERMAL / TEMPERATURE</div>
+                        <div class="metric-value"><span id="temperature">--</span><span class="unit">°C</span></div>
+                        <div class="metric-trend line-glow"></div>
+                    </div>
+                    <div class="glass-card metric">
+                        <div class="metric-title">ENVIRONMENT / HUMIDITY</div>
+                        <div class="metric-value"><span id="humidity">--</span><span class="unit">%</span></div>
+                        <div class="metric-trend line-glow"></div>
+                    </div>
+                    <div class="glass-card metric">
+                        <div class="metric-title">GROUND / SOIL MOISTURE</div>
+                        <div class="metric-value"><span id="soil">--</span><span class="unit">%</span></div>
+                        <div class="metric-trend line-glow"></div>
+                    </div>
+                    <div class="glass-card metric">
+                        <div class="metric-title">SEISMIC / MOTION INDEX</div>
+                        <div class="metric-value"><span id="motion">--</span><span class="unit">GI</span></div>
+                        <div class="metric-trend line-glow"></div>
+                    </div>
+                    <div class="glass-card metric">
+                        <div class="metric-title">SEISMIC / VIBRATION</div>
+                        <div class="metric-value"><span id="vibration">--</span><span class="unit">Hz</span></div>
+                        <div class="metric-trend line-glow"></div>
+                    </div>
+                </section>
+
+                <!-- ROW 2: MAP AND GAUGE -->
+                <section class="visuals-grid">
+                    <!-- Leaflet Location Map -->
+                    <div class="glass-card panel map-panel">
+                        <h3>Geographic Sensor Node Array (Live)</h3>
+                        <div id="sensorMap" class="map-container"></div>
+                    </div>
+
+                    <!-- AI Risk Gauge -->
+                    <div class="glass-card panel gauge-panel">
+                        <h3>AI Predictive Risk Matrix</h3>
+                        <div class="gauge-container">
+                            <canvas id="riskGaugeChart"></canvas>
+                            <div class="gauge-center-text" id="gaugeCenterText">SAFE</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ROW 3: LIVE SENSOR CHARTS -->
+                <section class="charts-grid">
+                    <div class="glass-card panel">
+                        <h3>Thermal Activity</h3>
+                        <div class="chart-wrapper"><canvas id="temperatureChart"></canvas></div>
+                    </div>
+                    <div class="glass-card panel">
+                        <h3>Humidity Resonance</h3>
+                        <div class="chart-wrapper"><canvas id="humidityChart"></canvas></div>
+                    </div>
+                    <div class="glass-card panel">
+                        <h3>Soil Saturation</h3>
+                        <div class="chart-wrapper"><canvas id="soilChart"></canvas></div>
+                    </div>
+                    <div class="glass-card panel">
+                        <h3>Motion Dynamics</h3>
+                        <div class="chart-wrapper"><canvas id="motionChart"></canvas></div>
+                    </div>
+                    <div class="glass-card panel">
+                        <h3>Vibration Frequency</h3>
+                        <div class="chart-wrapper"><canvas id="vibrationChart"></canvas></div>
+                    </div>
+                    <div class="glass-card panel">
+                        <h3>3-Axis Acceleration</h3>
+                        <div class="chart-wrapper"><canvas id="accChart"></canvas></div>
+                    </div>
+                    <div class="glass-card panel">
+                        <h3>Gyroscopic Shift</h3>
+                        <div class="chart-wrapper"><canvas id="gyroChart"></canvas></div>
+                    </div>
+                </section>
+
+                <!-- ROW 4: PREDICTION HISTORY -->
+                <section class="full-width">
+                    <div class="glass-card panel big-panel">
+                        <h3>AI Temporal Risk Assessment History</h3>
+                        <div class="chart-wrapper huge"><canvas id="predictionHistoryChart"></canvas></div>
+                    </div>
+                </section>
+
+                <!-- DATABASE & ANALYTICS TOOLS -->
+                <section class="tools-grid">
+                    <div class="glass-card panel interact-panel">
+                        <h3>Historical Repository Access</h3>
+                        <p>Query master database for specific temporal ranges.</p>
+                        <div class="controls">
+                            <div class="input-group">
+                                <label>T-MINUS (START)</label>
+                                <input type="date" id="start">
+                            </div>
+                            <div class="input-group">
+                                <label>T-PLUS (END)</label>
+                                <input type="date" id="end">
+                            </div>
+                            <button onclick="loadHistory()" class="btn-glow">INITIATE QUERY</button>
+                        </div>
+                        <div class="chart-wrapper mt-3"><canvas id="historyChart"></canvas></div>
+                    </div>
+
+                    <div class="glass-card panel interact-panel">
+                        <h3>Data Export Protocols</h3>
+                        <p>Compile selected temporal range into CSV tensor for offline ML model training.</p>
+                        <div class="controls center-block">
+                            <button onclick="downloadCSV()" class="btn-glow alert-btn">DOWNLOAD DATASET</button>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
