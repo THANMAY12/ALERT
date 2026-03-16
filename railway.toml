@@ -1,5 +1,6 @@
 [build]
 builder = "nixpacks"
+nixpacksPlan = '{"phases":{"setup":{"nixPkgs":["nodejs_20","npm-9_x"]}}}'
 
 [deploy]
 startCommand = "node backend/server.js"
