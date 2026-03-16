@@ -1,5 +1,5 @@
 // Global Configuration
-const API = "http://localhost:5000";
+const API = "https://alert-production-31fb.up.railway.app";
 const socket = io(API); // Initialize Socket.io client
 
 // Shared UI Elements
