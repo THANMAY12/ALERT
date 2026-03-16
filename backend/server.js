@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
-// cors package removed — using manual CORS headers instead (Express v5 compatible)
+const cors = require("cors");
 const axios = require("axios");
 const dns = require("dns");
 const http = require("http");
@@ -21,7 +21,7 @@ const io = new Server(server, {
   }
 });
 
-// Manual CORS middleware — fully compatible with Express v5
+// Manual CORS middleware — works with both Express v4 and v5
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -31,6 +31,7 @@ app.use((req, res, next) => {
   }
   next();
 });
+app.use(cors());
 app.use(express.json());
 
 /* -----------------------------
